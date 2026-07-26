@@ -12,12 +12,11 @@ import {
 } from '@/domain/time'
 import { useAtlasStore } from '@/data/store'
 import { useMotionMode } from '@/design/hooks/use-motion-mode'
-import { Text } from '@/design/primitives/text'
 import { duration, easeSettle, reducedFade } from '@/design/tokens'
-import { WEEK_NO_SYSTEMS_BODY, WEEK_NO_SYSTEMS_TITLE } from '@/design/copy'
 
-import { AddSystemForm } from './add-system-form'
-import { SystemGrid } from './system-grid'
+import { BookSection } from './book-section'
+import { QuestionSection } from './question-section'
+import { SystemsSection } from './systems-section'
 import { TodayBand } from './today-band'
 import { WeekFooter } from './week-footer'
 import { WeekHeader } from './week-header'
@@ -35,13 +34,20 @@ function formatWeekRange(weekKey: WeekKey): string {
 }
 
 /**
- * The Week room (blueprint/02 R1) — the screen opened every morning. Reads
- * the document once at the top and passes plain data down; every write goes
- * through the imported data/actions functions directly (blueprint/03), the
- * same pattern already used by the Data & Settings feature.
+ * The Week room (blueprint/02 R1) — the screen opened every morning.
+ *
+ * Deliberately reads only the small, stable slices it needs directly
+ * (founding date, the season) rather than the whole document: Question,
+ * Book, Systems, and the today band each own a narrow, independent
+ * `useAtlasStore` selector and are memoized, so editing a book's progress
+ * never re-renders the systems grid and marking a session never re-renders
+ * the question card (blueprint/07's performance note). Every write still
+ * goes through the imported data/actions functions directly (blueprint/03).
  */
 export function WeekScreen() {
-  const doc = useAtlasStore((state) => state.doc)
+  const hydrated = useAtlasStore((state) => state.doc !== null)
+  const season = useAtlasStore((state) => state.doc?.seasons[0])
+  const foundedAt = useAtlasStore((state) => state.doc?.meta.foundedAt)
   const [viewedWeekKey, setViewedWeekKey] = useState<WeekKey>(() => currentWeekKey())
   const motionMode = useMotionMode()
 
@@ -65,12 +71,10 @@ export function WeekScreen() {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [])
 
-  if (doc === null) return null
+  if (!hydrated || foundedAt === undefined) return null
 
   const today = todayLocal()
   const isCurrentWeek = viewedWeekKey === currentWeekKey()
-  const activeSystems = doc.systems.filter((system) => system.status === 'active')
-  const todaySignal = doc.signals.find((signal) => signal.date === today)
   const dateLabel = isCurrentWeek
     ? fullDateFormatter.format(parseLocalDay(today))
     : formatWeekRange(viewedWeekKey)
@@ -92,7 +96,7 @@ export function WeekScreen() {
     >
       <h1 className="sr-only">This week</h1>
       <WeekHeader
-        {...(doc.seasons[0] !== undefined ? { season: doc.seasons[0] } : {})}
+        {...(season !== undefined ? { season } : {})}
         weekKey={viewedWeekKey}
         isCurrentWeek={isCurrentWeek}
         dateLabel={dateLabel}
@@ -100,34 +104,13 @@ export function WeekScreen() {
         onNextWeek={() => setViewedWeekKey((week) => stepWeek(week, 'next'))}
       />
 
-      {activeSystems.length === 0 ? (
-        <div className="flex flex-col items-center gap-4 rounded-card border border-line px-6 py-12 text-center">
-          <Text variant="body" as="p">
-            {WEEK_NO_SYSTEMS_TITLE}
-          </Text>
-          <Text variant="ui" as="p" muted>
-            {WEEK_NO_SYSTEMS_BODY}
-          </Text>
-          <AddSystemForm />
-        </div>
-      ) : (
-        <div className="flex flex-col gap-4">
-          <SystemGrid
-            key={viewedWeekKey}
-            systems={activeSystems}
-            sessions={doc.sessions}
-            weekKey={viewedWeekKey}
-            today={today}
-          />
-          <AddSystemForm />
-        </div>
-      )}
+      <QuestionSection />
+      <BookSection />
+      <SystemsSection weekKey={viewedWeekKey} today={today} />
 
-      {isCurrentWeek && (
-        <TodayBand {...(todaySignal !== undefined ? { signal: todaySignal } : {})} />
-      )}
+      {isCurrentWeek && <TodayBand />}
 
-      <WeekFooter dayOfBecoming={dayOfBecoming(doc.meta.foundedAt, today)} />
+      <WeekFooter dayOfBecoming={dayOfBecoming(foundedAt, today)} />
     </motion.div>
   )
 }
