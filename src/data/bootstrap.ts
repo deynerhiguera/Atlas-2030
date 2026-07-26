@@ -1,7 +1,7 @@
 import { createAutosave, type Autosave } from './persist/autosave'
 import { hydrateAtlasDoc } from './persist/hydrate'
 import { requestPersistentStorage } from './persist/storage-status'
-import { setHydratedDoc, setHydrationError, useAtlasStore } from './store/atlas-store'
+import { setAutosaveError, setHydratedDoc, setHydrationError, useAtlasStore } from './store/atlas-store'
 
 let autosaveInstance: Autosave | null = null
 
@@ -16,7 +16,7 @@ export async function initializeAtlasData(appVersion: string): Promise<void> {
     const { doc, isFreshInstall } = await hydrateAtlasDoc(appVersion)
     setHydratedDoc(doc)
 
-    const autosave = createAutosave()
+    const autosave = createAutosave(undefined, setAutosaveError)
     autosave.attach()
     autosaveInstance = autosave
     useAtlasStore.subscribe((state, prevState) => {

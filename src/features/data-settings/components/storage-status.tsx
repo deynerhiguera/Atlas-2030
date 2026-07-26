@@ -44,6 +44,7 @@ function StatusRow({ label, value }: Row) {
 /** Storage, schema, app version, and founding date — the installation's vital signs. */
 export function StorageStatus() {
   const doc = useAtlasStore((state) => state.doc)
+  const autosaveError = useAtlasStore((state) => state.autosaveError)
   const [storage, setStorage] = useState<StorageStatusData | null>(null)
 
   useEffect(() => {
@@ -75,6 +76,7 @@ export function StorageStatus() {
         label="Persisted"
         value={storage === null ? '—' : storage.persisted ? 'Yes' : 'Not requested'}
       />
+      <StatusRow label="Autosave" value={autosaveError ?? 'Working'} />
       <StatusRow label="Founded" value={doc === null ? '—' : formatFoundedAt(doc.meta.foundedAt)} />
       <StatusRow label="Schema version" value={doc === null ? '—' : String(doc.schemaVersion)} />
       <StatusRow label="App version" value={__APP_VERSION__} />
