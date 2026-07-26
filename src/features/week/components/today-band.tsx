@@ -4,7 +4,7 @@ import { setTodayEnergy, setTodayLine } from '@/data/actions'
 import { useAtlasStore } from '@/data/store'
 import { EnergyDial, OneLiner } from '@/design/components'
 import { ONE_LINER_PROMPTS } from '@/design/copy'
-import { todayLocal } from '@/domain/time'
+import { useToday } from '@/design/hooks/use-today'
 
 /**
  * The entire daily obligation (blueprint/02): energy + an optional line,
@@ -13,10 +13,12 @@ import { todayLocal } from '@/domain/time'
  *
  * Selects only today's own Signal — marking a session, closing a question,
  * or turning a book's page never re-renders this band (blueprint/07's
- * performance note), and vice versa.
+ * performance note), and vice versa. `today` is reactive (`useToday`, not a
+ * one-shot call) so a tab left open past midnight looks up the new day's
+ * Signal instead of silently continuing to read and write yesterday's.
  */
 export const TodayBand = memo(function TodayBand() {
-  const today = todayLocal()
+  const today = useToday()
   const signal = useAtlasStore((state) => state.doc?.signals.find((entry) => entry.date === today))
 
   return (
@@ -29,7 +31,7 @@ export const TodayBand = memo(function TodayBand() {
         <OneLiner
           {...(signal?.line !== undefined ? { value: signal.line } : {})}
           onCommit={setTodayLine}
-          promptRotation={[...ONE_LINER_PROMPTS]}
+          promptRotation={ONE_LINER_PROMPTS}
         />
       </div>
     </div>

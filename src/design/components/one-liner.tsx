@@ -8,7 +8,7 @@ import { duration, easeSettle, reducedFade } from '@/design/tokens'
 interface OneLinerProps {
   value?: string
   onCommit: (text: string) => void
-  promptRotation: string[]
+  promptRotation: readonly string[]
   disabled?: boolean
 }
 

@@ -1,18 +1,9 @@
-import { motion } from 'motion/react'
 import { useEffect, useState } from 'react'
 
 import { dayOfBecoming } from '@/domain/derive'
-import {
-  currentWeekKey,
-  parseLocalDay,
-  stepWeek,
-  todayLocal,
-  weekBoundaries,
-  type WeekKey,
-} from '@/domain/time'
+import { currentWeekKey, parseLocalDay, stepWeek, weekBoundaries, type WeekKey } from '@/domain/time'
 import { useAtlasStore } from '@/data/store'
-import { useMotionMode } from '@/design/hooks/use-motion-mode'
-import { duration, easeSettle, reducedFade } from '@/design/tokens'
+import { useToday } from '@/design/hooks/use-today'
 
 import { BookSection } from './book-section'
 import { CaptureAction } from './capture-action'
@@ -45,13 +36,17 @@ function formatWeekRange(weekKey: WeekKey): string {
  * never re-renders the question card (blueprint/07's performance note).
  * Every write still goes through the imported data/actions functions
  * directly (blueprint/03).
+ *
+ * Room-entrance and room-to-room motion live one level up, in the router's
+ * root component — every room gets the same crossfade there, rather than
+ * each room screen reimplementing its own one-off entrance animation.
  */
 export function WeekScreen() {
   const hydrated = useAtlasStore((state) => state.doc !== null)
   const season = useAtlasStore((state) => state.doc?.seasons[0])
   const foundedAt = useAtlasStore((state) => state.doc?.meta.foundedAt)
   const [viewedWeekKey, setViewedWeekKey] = useState<WeekKey>(() => currentWeekKey())
-  const motionMode = useMotionMode()
+  const today = useToday()
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
@@ -75,27 +70,13 @@ export function WeekScreen() {
 
   if (!hydrated || foundedAt === undefined) return null
 
-  const today = todayLocal()
   const isCurrentWeek = viewedWeekKey === currentWeekKey()
   const dateLabel = isCurrentWeek
     ? fullDateFormatter.format(parseLocalDay(today))
     : formatWeekRange(viewedWeekKey)
 
-  const enter =
-    motionMode === 'full'
-      ? { initial: { opacity: 0, y: 4 }, animate: { opacity: 1, y: 0 } }
-      : { initial: { opacity: 0 }, animate: { opacity: 1 } }
-  const transition =
-    motionMode === 'full'
-      ? { duration: duration.room, ease: easeSettle }
-      : { duration: reducedFade }
-
   return (
-    <motion.div
-      {...enter}
-      transition={transition}
-      className="mx-auto flex max-w-prose-atlas flex-col gap-10 px-6 py-12 md:px-0"
-    >
+    <div className="mx-auto flex max-w-prose-atlas flex-col gap-10 px-6 py-12 md:px-0">
       <h1 className="sr-only">This week</h1>
       <WeekHeader
         {...(season !== undefined ? { season } : {})}
@@ -115,6 +96,6 @@ export function WeekScreen() {
       <WeekFooter dayOfBecoming={dayOfBecoming(foundedAt, today)} />
 
       <CaptureAction />
-    </motion.div>
+    </div>
   )
 }
