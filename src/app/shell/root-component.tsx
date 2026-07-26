@@ -19,6 +19,10 @@ import { RoomShell } from './room-shell'
  * positioning is needed to prevent the two from overlapping mid-transition,
  * since Week and Data differ enough in height that a true simultaneous
  * overlap would read as a layout jump, not a crossfade.
+ *
+ * `/founding` renders without `RoomShell`'s nav rail (blueprint/02: a
+ * ceremony is "entered deliberately, never interruptive") — there is
+ * nowhere to navigate to before founding finishes, so no chrome offers to.
  */
 export function RootComponent() {
   const { status, takeOver } = useTabGuard(() => void flushAutosave())
@@ -38,19 +42,19 @@ export function RootComponent() {
   const transition =
     motionMode === 'full' ? { duration: duration.room, ease: easeSettle } : { duration: reducedFade }
 
-  return (
-    <RoomShell>
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.div
-          key={location.pathname}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={transition}
-        >
-          <Outlet />
-        </motion.div>
-      </AnimatePresence>
-    </RoomShell>
+  const content = (
+    <AnimatePresence mode="wait" initial={false}>
+      <motion.div
+        key={location.pathname}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={transition}
+      >
+        <Outlet />
+      </motion.div>
+    </AnimatePresence>
   )
+
+  return location.pathname === '/founding' ? content : <RoomShell>{content}</RoomShell>
 }
