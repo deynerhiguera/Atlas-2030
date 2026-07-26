@@ -2,14 +2,17 @@ import type { AtlasDoc } from '@/domain/schema'
 
 import { writeRawDoc } from './db'
 
-const AUTOSAVE_DEBOUNCE_MS = 500
+const DEFAULT_AUTOSAVE_DEBOUNCE_MS = 500
 
 /**
  * Debounced whole-document autosave (blueprint/03, FR-D1). Flushes
  * immediately on tab hide/unload so a debounce window is the most any
  * session can lose — never more.
+ *
+ * `debounceMs` is injectable so tests can use a short real delay instead of
+ * the production 500ms; it should never be passed in application code.
  */
-export function createAutosave() {
+export function createAutosave(debounceMs: number = DEFAULT_AUTOSAVE_DEBOUNCE_MS) {
   let timer: ReturnType<typeof setTimeout> | null = null
   let pending: AtlasDoc | null = null
   let writing: Promise<void> = Promise.resolve()
@@ -32,7 +35,7 @@ export function createAutosave() {
     if (timer !== null) clearTimeout(timer)
     timer = setTimeout(() => {
       void flushNow()
-    }, AUTOSAVE_DEBOUNCE_MS)
+    }, debounceMs)
   }
 
   function onVisibilityOrHide(): void {

@@ -33,7 +33,16 @@ export async function writeRawDoc(value: unknown): Promise<void> {
   await db.put(STORE_NAME, value, DOC_KEY)
 }
 
-/** Test-only: forces a fresh connection on the next call. */
-export function resetDbConnectionForTests(): void {
+/**
+ * Test-only: actually closes the open connection before dropping the
+ * reference. Merely discarding the cached promise leaves a live IndexedDB
+ * connection nobody told to close — `indexedDB.deleteDatabase` then blocks
+ * forever waiting for a close that never comes.
+ */
+export async function resetDbConnectionForTests(): Promise<void> {
+  if (dbPromise !== null) {
+    const db = await dbPromise
+    db.close()
+  }
   dbPromise = null
 }
