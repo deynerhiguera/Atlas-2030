@@ -1,12 +1,9 @@
 import { memo } from 'react'
 
 import { useAtlasStore } from '@/data/store'
-import { Text } from '@/design/primitives/text'
-import { WEEK_NO_SYSTEMS_BODY, WEEK_NO_SYSTEMS_TITLE } from '@/design/copy'
 import type { DayString, SessionMark, System } from '@/domain/schema'
 import type { WeekKey } from '@/domain/time'
 
-import { AddSystemForm } from './add-system-form'
 import { SectionLabel } from './section-label'
 import { SystemGrid } from './system-grid'
 
@@ -24,6 +21,11 @@ interface SystemsSectionProps {
  * re-renders the grid (blueprint/07's performance note). `weekKey`/`today`
  * are view state owned by WeekScreen, not document data, so passing them as
  * props doesn't reintroduce the coupling this split exists to avoid.
+ *
+ * No empty state and no add-a-system control here: the Founding ceremony
+ * declares 1–10 systems before Week is ever reachable (FR-F5), so this
+ * section can assume a real roster. Declaring a new system after founding
+ * is not a v0.1 interaction (blueprint/02 R1 lists none).
  */
 export const SystemsSection = memo(function SystemsSection({
   weekKey,
@@ -36,28 +38,13 @@ export const SystemsSection = memo(function SystemsSection({
   return (
     <section className="flex flex-col gap-3">
       <SectionLabel>Systems</SectionLabel>
-      {activeSystems.length === 0 ? (
-        <div className="flex flex-col items-center gap-4 rounded-card border border-line px-6 py-12 text-center">
-          <Text variant="body" as="p">
-            {WEEK_NO_SYSTEMS_TITLE}
-          </Text>
-          <Text variant="ui" as="p" muted>
-            {WEEK_NO_SYSTEMS_BODY}
-          </Text>
-          <AddSystemForm />
-        </div>
-      ) : (
-        <div className="flex flex-col gap-4">
-          <SystemGrid
-            key={weekKey}
-            systems={activeSystems}
-            sessions={sessions}
-            weekKey={weekKey}
-            today={today}
-          />
-          <AddSystemForm />
-        </div>
-      )}
+      <SystemGrid
+        key={weekKey}
+        systems={activeSystems}
+        sessions={sessions}
+        weekKey={weekKey}
+        today={today}
+      />
     </section>
   )
 })
