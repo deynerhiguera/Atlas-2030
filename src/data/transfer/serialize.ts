@@ -98,6 +98,7 @@ function reorderMilestone(m: MilestoneCapture): MilestoneCapture {
     id: m.id,
     text: m.text,
     ...(m.pillar !== undefined ? { pillar: m.pillar } : {}),
+    ...(m.note !== undefined ? { note: m.note } : {}),
     capturedAt: m.capturedAt,
     ...(m.source !== undefined ? { source: m.source } : {}),
   }

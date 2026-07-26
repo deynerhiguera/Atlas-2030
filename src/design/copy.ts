@@ -30,3 +30,10 @@ export const START_BOOK_BODY = 'What are you reading toward right now?'
 export const IDEA_ADD_LABEL = 'Add an idea'
 
 export const IDEA_EMPTY_HINT = 'Ideas tend to arrive mid-page.'
+
+export const CAPTURE_TITLE = 'Capture'
+
+export const CAPTURE_DESCRIPTION =
+  'Capture a milestone, or add to the notes on your current question or the ideas from your current book.'
+
+export const CAPTURE_MILESTONE_PLACEHOLDER = 'What happened?'
