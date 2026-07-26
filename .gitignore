@@ -1,0 +1,11 @@
+# dependencies / build
+node_modules
+dist
+
+# editor & os
+.DS_Store
+*.local
+
+# user data never enters the tree (blueprint/11)
+*.atlas.json
+backups/

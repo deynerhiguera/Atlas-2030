@@ -1,0 +1,17 @@
+{
+  "name": "Atlas",
+  "short_name": "Atlas",
+  "description": "A personal operating system for becoming.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAF9F7",
+  "theme_color": "#FAF9F7",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
