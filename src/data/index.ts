@@ -1,0 +1,5 @@
+export { initializeAtlasData, flushAutosave } from './bootstrap'
+export { useAtlasStore, getCurrentDoc } from './store'
+export type { AtlasStoreState } from './store'
+export { useTabGuard } from './persist'
+export type { TabGuardHandle } from './persist'
