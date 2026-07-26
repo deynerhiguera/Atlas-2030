@@ -20,6 +20,22 @@ export const pillarHues: Record<PillarId, { light: string; dark: string }> = {
   relationships: { light: '#B07A8C', dark: '#C795A7' },
 }
 
+/**
+ * Literal Tailwind class names, keyed by pillar (blueprint/05: pillar hues
+ * appear only as accents). Written out in full — not built as `bg-${hue}` —
+ * because Tailwind's build-time scanner only finds classes that appear as
+ * literal strings in source; a template-interpolated class name would
+ * silently fail to generate its CSS.
+ */
+export const pillarDotClass: Record<PillarId, string> = {
+  engineering: 'bg-engineering',
+  university: 'bg-university',
+  english: 'bg-english',
+  health: 'bg-health',
+  spirit: 'bg-spirit',
+  relationships: 'bg-relationships',
+}
+
 export const base = {
   light: {
     bg: '#FAF9F7',
