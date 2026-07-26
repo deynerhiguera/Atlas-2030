@@ -49,7 +49,30 @@ export function RoomShell({ children }: { children: ReactNode }) {
             </Link>
           </nav>
         </div>
-        <ThemeToggle />
+        <div className="flex items-center gap-1">
+          <Link
+            to="/data"
+            aria-label="Data & Settings"
+            title="Data & Settings"
+            className="grid size-8 place-items-center rounded-control text-ink-muted transition-colors duration-instant ease-settle hover:bg-surface hover:text-ink"
+          >
+            <svg
+              width={16}
+              height={16}
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.5}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="8" cy="8" r="2" />
+              <path d="M8 1.8v1.6M8 12.6v1.6M14.2 8h-1.6M3.4 8H1.8M12.3 3.7l-1.1 1.1M4.8 11.1l-1.1 1.1M12.3 12.3l-1.1-1.1M4.8 4.9 3.7 3.7" />
+            </svg>
+          </Link>
+          <ThemeToggle />
+        </div>
       </header>
       <main className="min-h-0 flex-1">{children}</main>
     </div>

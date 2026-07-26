@@ -6,16 +6,41 @@ import { RouterProvider } from '@tanstack/react-router'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 
+import { initializeAtlasData, useAtlasStore } from '@/data'
+import { GateScreen } from '@/design/primitives/gate-screen'
+
 import { ThemeProvider } from './providers/theme-provider'
 import { router } from './router'
 
-const rootElement = document.getElementById('root')
-if (rootElement === null) throw new Error('Root element #root is missing from index.html')
+/**
+ * Hydration is awaited here, before anything renders (blueprint/03) — there
+ * is no loading screen anywhere in Atlas because there is nothing to wait
+ * for once this resolves. On failure the stored bytes are left untouched
+ * (blueprint/10): this renders an honest message, never a silent crash and
+ * never a repaired-looking document.
+ */
+async function bootstrap() {
+  const rootElement = document.getElementById('root')
+  if (rootElement === null) throw new Error('Root element #root is missing from index.html')
 
-createRoot(rootElement).render(
-  <StrictMode>
-    <ThemeProvider>
+  await initializeAtlasData(__APP_VERSION__)
+  const { hydrationError } = useAtlasStore.getState()
+
+  const tree =
+    hydrationError === null ? (
       <RouterProvider router={router} />
-    </ThemeProvider>
-  </StrictMode>,
-)
+    ) : (
+      <GateScreen
+        title="Atlas couldn't load"
+        message={`${hydrationError} Nothing has been changed or deleted — your data is still on this device.`}
+      />
+    )
+
+  createRoot(rootElement).render(
+    <StrictMode>
+      <ThemeProvider>{tree}</ThemeProvider>
+    </StrictMode>,
+  )
+}
+
+void bootstrap()

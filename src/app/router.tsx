@@ -1,15 +1,12 @@
-import { createRootRoute, createRoute, createRouter, Outlet } from '@tanstack/react-router'
+import { createRootRoute, createRoute, createRouter } from '@tanstack/react-router'
 
+import { DataScreen } from '@/features/data-settings'
 import { WeekScreen } from '@/features/week'
 
-import { RoomShell } from './shell/room-shell'
+import { RootComponent } from './shell/root-component'
 
 const rootRoute = createRootRoute({
-  component: () => (
-    <RoomShell>
-      <Outlet />
-    </RoomShell>
-  ),
+  component: RootComponent,
 })
 
 const weekRoute = createRoute({
@@ -18,7 +15,13 @@ const weekRoute = createRoute({
   component: WeekScreen,
 })
 
-const routeTree = rootRoute.addChildren([weekRoute])
+const dataRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/data',
+  component: DataScreen,
+})
+
+const routeTree = rootRoute.addChildren([weekRoute, dataRoute])
 
 export const router = createRouter({
   routeTree,
