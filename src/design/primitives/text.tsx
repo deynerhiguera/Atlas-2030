@@ -33,13 +33,18 @@ interface TextProps {
   as?: ElementType
   muted?: boolean
   className?: string
+  /** For `aria-labelledby` targets — the one DOM attribute worth naming explicitly here. */
+  id?: string
   children: ReactNode
 }
 
-export function Text({ variant, as, muted = false, className, children }: TextProps) {
+export function Text({ variant, as, muted = false, className, id, children }: TextProps) {
   const Tag = as ?? 'p'
   return (
-    <Tag className={cn(variantClasses[variant], muted ? 'text-ink-muted' : 'text-ink', className)}>
+    <Tag
+      id={id}
+      className={cn(variantClasses[variant], muted ? 'text-ink-muted' : 'text-ink', className)}
+    >
       {children}
     </Tag>
   )

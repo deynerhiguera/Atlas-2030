@@ -101,7 +101,7 @@ export function SystemGrid({ systems, sessions, weekKey, today }: SystemGridProp
               key={day}
               role="columnheader"
               aria-label={fullDateFormatter.format(parsed)}
-              className={`text-center text-label uppercase tracking-[0.08em] ${
+              className={`text-center font-sans text-label uppercase tracking-[0.08em] ${
                 day === today ? 'text-ink' : 'text-ink-muted'
               }`}
             >
