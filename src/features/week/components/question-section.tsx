@@ -2,12 +2,12 @@ import { memo, useState } from 'react'
 
 import { askQuestion } from '@/data/actions'
 import { useAtlasStore } from '@/data/store'
+import { AskNextPrompt } from '@/design/components/ask-next-prompt'
 import { QuestionCard } from '@/design/components/question-card'
 import { Button } from '@/design/primitives/button'
 import { ASK_QUESTION_BODY, ASK_QUESTION_TITLE } from '@/design/copy'
 import type { Question } from '@/domain/schema'
 
-import { AskNextPrompt } from './ask-next-prompt'
 import { QuestionSheet } from './question-sheet'
 import { SectionLabel } from './section-label'
 
