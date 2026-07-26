@@ -9,6 +9,7 @@ import { createRoot } from 'react-dom/client'
 import { initializeAtlasData, useAtlasStore } from '@/data'
 import { GateScreen } from '@/design/primitives/gate-screen'
 
+import { MotionModeProvider } from './providers/motion-mode-provider'
 import { ThemeProvider } from './providers/theme-provider'
 import { router } from './router'
 
@@ -38,7 +39,9 @@ async function bootstrap() {
 
   createRoot(rootElement).render(
     <StrictMode>
-      <ThemeProvider>{tree}</ThemeProvider>
+      <MotionModeProvider>
+        <ThemeProvider>{tree}</ThemeProvider>
+      </MotionModeProvider>
     </StrictMode>,
   )
 }
