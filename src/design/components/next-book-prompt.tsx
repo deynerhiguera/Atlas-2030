@@ -1,51 +1,55 @@
 import { useState, type FormEvent } from 'react'
 
-import type { AskQuestionInput } from '@/data/actions'
 import { Button } from '@/design/primitives/button'
 import { Text } from '@/design/primitives/text'
 import { TextField } from '@/design/primitives/text-field'
 import { PILLAR_IDS, pillarLabels, type PillarId } from '@/domain/schema'
 
-interface AskNextPromptProps {
+interface NextBookPromptProps {
   title: string
   body: string
-  onAsk: (input: AskQuestionInput) => void
+  onStart: (input: { title: string; pillar: PillarId; why: string }) => void
   submitLabel?: string
   onSkip?: () => void
   skipLabel?: string
 }
 
 /**
- * The permanent entry point for a new Engineering Question (blueprint/06
- * AskNextPrompt) — shown both as the Week screen's empty state and, with
- * `onSkip` present, inline inside QuestionSheet right after a question
- * closes. Not scaffolding: this is where the Founding ceremony's own
- * question step (roadmap M6) will eventually live too.
+ * The permanent entry point for a new current book (blueprint/06
+ * NextBookPrompt) — the Week screen's empty state, and, with `onSkip`
+ * present, the inline offer inside BookSheet right after finishing or
+ * setting one down (FR-B5), and the Founding ceremony's own book step.
+ * Lives in design/ rather than a single feature (blueprint/03 layering)
+ * because both `week` and `founding` need it. Asks only what and why, like
+ * an inscription.
  */
-export function AskNextPrompt({
+export function NextBookPrompt({
   title,
   body,
-  onAsk,
-  submitLabel = 'Ask',
+  onStart,
+  submitLabel = 'Start',
   onSkip,
   skipLabel = 'Not yet',
-}: AskNextPromptProps) {
-  const [text, setText] = useState('')
+}: NextBookPromptProps) {
+  const [bookTitle, setBookTitle] = useState('')
+  const [why, setWhy] = useState('')
   const [pillar, setPillar] = useState<PillarId>('engineering')
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault()
-    const trimmed = text.trim()
-    if (trimmed.length === 0) return
-    onAsk({ text: trimmed, pillar })
-    setText('')
+    const trimmedTitle = bookTitle.trim()
+    const trimmedWhy = why.trim()
+    if (trimmedTitle.length === 0 || trimmedWhy.length === 0) return
+    onStart({ title: trimmedTitle, pillar, why: trimmedWhy })
+    setBookTitle('')
+    setWhy('')
   }
 
   return (
     <form
       onSubmit={handleSubmit}
       className="flex flex-col items-center gap-4 rounded-card border border-line px-6 py-8 text-center"
-      aria-label="Ask a question"
+      aria-label="Start a book"
     >
       <Text variant="body" as="p">
         {title}
@@ -55,13 +59,20 @@ export function AskNextPrompt({
       </Text>
       <div className="flex w-full max-w-sm flex-col gap-2">
         <TextField
-          serif
-          value={text}
-          onChange={(event) => setText(event.target.value)}
-          placeholder="Why does RAM exist?"
-          maxLength={300}
-          aria-label="Your question"
+          value={bookTitle}
+          onChange={(event) => setBookTitle(event.target.value)}
+          placeholder="Title"
+          maxLength={200}
+          aria-label="Book title"
           autoFocus
+        />
+        <TextField
+          serif
+          value={why}
+          onChange={(event) => setWhy(event.target.value)}
+          placeholder="I'm reading this because…"
+          maxLength={500}
+          aria-label="Why you're reading it"
         />
         <select
           value={pillar}
@@ -77,7 +88,12 @@ export function AskNextPrompt({
         </select>
       </div>
       <div className="flex items-center gap-2">
-        <Button type="submit" variant="solid" size="sm" disabled={text.trim().length === 0}>
+        <Button
+          type="submit"
+          variant="solid"
+          size="sm"
+          disabled={bookTitle.trim().length === 0 || why.trim().length === 0}
+        >
           {submitLabel}
         </Button>
         {onSkip !== undefined && (

@@ -3,11 +3,11 @@ import { memo, useState } from 'react'
 import { startBook } from '@/data/actions'
 import { useAtlasStore } from '@/data/store'
 import { BookCard } from '@/design/components/book-card'
+import { NextBookPrompt } from '@/design/components/next-book-prompt'
 import { START_BOOK_BODY, START_BOOK_TITLE } from '@/design/copy'
 import type { Book } from '@/domain/schema'
 
 import { BookSheet } from './book-sheet'
-import { NextBookPrompt } from './next-book-prompt'
 import { SectionLabel } from './section-label'
 
 const EMPTY_BOOKS: Book[] = []

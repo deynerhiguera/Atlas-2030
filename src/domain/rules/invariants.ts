@@ -8,11 +8,14 @@ import { isoWeekKeyOf } from '../time/iso-week'
  * Invariants (blueprint/04). Each is a pure predicate the action layer
  * consults before committing a mutation — this file never mutates anything.
  *
- * Two invariants from the blueprint do not yet apply and are intentionally
+ * One invariant from the blueprint does not yet apply and is intentionally
  * absent: I-6 (one weekly Reflection) needs the Reflection entity, which
- * arrives at schemaVersion 2; I-9 (identity has a version per pillar) needs
- * the Founding ceremony, which arrives at roadmap M6. Neither is deferred
- * work sitting unfinished — they simply have no subject yet.
+ * arrives at schemaVersion 2. I-9 (identity has a version per pillar
+ * post-founding) is enforced procedurally instead of as a standalone
+ * predicate here — the Founding ceremony's identity step is the only writer
+ * of `IdentityVersion`, and it does not advance past a pillar without
+ * recording one, so the invariant holds by construction for any document
+ * that has finished founding.
  */
 
 /**

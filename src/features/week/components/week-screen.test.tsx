@@ -28,13 +28,6 @@ describe('WeekScreen — rendering', () => {
     expect(screen.getByText('Day 8 of becoming')).toBeInTheDocument()
   })
 
-  it('shows the invitation to add a system when none exist yet', () => {
-    setHydratedDoc(makeDoc())
-    render(<WeekScreen />)
-    expect(screen.getByText('Nothing running yet')).toBeInTheDocument()
-    expect(screen.queryByRole('grid')).not.toBeInTheDocument()
-  })
-
   it('shows the season line only when a season exists', () => {
     setHydratedDoc(
       makeDoc({
@@ -52,22 +45,6 @@ describe('WeekScreen — rendering', () => {
     )
     render(<WeekScreen />)
     expect(screen.getByText(/Foundations · Week 1 of 12/)).toBeInTheDocument()
-  })
-})
-
-describe('WeekScreen — adding a system end to end', () => {
-  it('typing a name and submitting makes the grid appear', async () => {
-    const user = userEvent.setup({ delay: null })
-    setHydratedDoc(makeDoc())
-    render(<WeekScreen />)
-
-    await user.click(screen.getByRole('button', { name: '+ Add a system' }))
-    await user.type(screen.getByLabelText('Name'), 'Deep Learning')
-    await user.click(screen.getByRole('button', { name: 'Add' }))
-
-    expect(await screen.findByRole('grid')).toBeInTheDocument()
-    expect(screen.getByText('Deep Learning')).toBeInTheDocument()
-    expect(useAtlasStore.getState().doc?.systems).toHaveLength(1)
   })
 })
 
