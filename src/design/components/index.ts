@@ -1,2 +1,6 @@
 export { EnergyDial } from './energy-dial'
 export { OneLiner } from './one-liner'
+export { IdeaTrail } from './idea-trail'
+export type { IdeaTrailItem } from './idea-trail'
+export { QuestionCard } from './question-card'
+export { BookCard } from './book-card'
