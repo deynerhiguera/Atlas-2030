@@ -27,7 +27,7 @@ export const CURRENT_SCHEMA_VERSION = 1
  * memory, persisted whole. Collections are arrays — order is never semantic.
  *
  * `letter`, `identity`, `seasons`, `questions`, and `books` may be empty:
- * the Founding ceremony that would populate them (roadmap M5) has not
+ * the Founding ceremony that would populate them (roadmap M6) has not
  * shipped yet. Nothing here is fabricated to fill the gap.
  */
 export const atlasDocSchema = z.object({
@@ -50,7 +50,7 @@ export type AtlasDoc = z.infer<typeof atlasDocSchema>
 /**
  * A fresh, honest document for a brand-new install: real timestamps, empty
  * collections, default settings. Not a "founded" Atlas in the product sense
- * (blueprint/02's Founding ceremony is roadmap M5) — just a valid one.
+ * (blueprint/02's Founding ceremony is roadmap M6) — just a valid one.
  */
 export function createFreshAtlasDoc(now: Date, appVersion: string): AtlasDoc {
   return {

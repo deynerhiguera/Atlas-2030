@@ -8,7 +8,7 @@ import { isoTimestampSchema } from '../primitives'
  * exports, not determined adversaries; documented honestly, not "security".
  *
  * Optional at this stage of the build: the Founding ceremony that writes and
- * seals a real letter has not shipped yet (roadmap M5). A document may exist
+ * seals a real letter has not shipped yet (roadmap M6). A document may exist
  * — and be lived in — before a letter has been written.
  */
 export const letterSchema = z.object({

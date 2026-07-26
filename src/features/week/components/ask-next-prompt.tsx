@@ -20,7 +20,7 @@ interface AskNextPromptProps {
  * AskNextPrompt) — shown both as the Week screen's empty state and, with
  * `onSkip` present, inline inside QuestionSheet right after a question
  * closes. Not scaffolding: this is where the Founding ceremony's own
- * question step (roadmap M5) will eventually live too.
+ * question step (roadmap M6) will eventually live too.
  */
 export function AskNextPrompt({
   title,

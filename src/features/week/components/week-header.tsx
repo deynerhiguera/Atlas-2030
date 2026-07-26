@@ -43,7 +43,7 @@ interface WeekHeaderProps {
 
 /**
  * FR-W1: season name + week index (when a season exists — none can yet be
- * created before the Founding ceremony, roadmap M5, so this line is simply
+ * created before the Founding ceremony, roadmap M6, so this line is simply
  * absent today, never a placeholder standing in for it) alongside the date
  * and past-week navigation.
  */
