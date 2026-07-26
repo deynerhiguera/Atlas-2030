@@ -86,7 +86,11 @@ function reorderBook(b: Book): Book {
 }
 
 function reorderSignal(s: Signal): Signal {
-  return { date: s.date, energy: s.energy, ...(s.line !== undefined ? { line: s.line } : {}) }
+  return {
+    date: s.date,
+    ...(s.energy !== undefined ? { energy: s.energy } : {}),
+    ...(s.line !== undefined ? { line: s.line } : {}),
+  }
 }
 
 function reorderMilestone(m: MilestoneCapture): MilestoneCapture {

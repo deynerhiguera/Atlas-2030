@@ -2,6 +2,7 @@ export {
   hasAtMostOneSeason,
   isSessionSlotFree,
   isSessionInCurrentWeek,
+  isSessionCellEditable,
   hasAtMostOneLiveQuestion,
   hasAtMostOneReadingBook,
   isSignalEditableToday,

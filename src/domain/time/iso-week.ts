@@ -30,8 +30,7 @@ function isoWeekInfo(day: DayString): { isoYear: number; isoWeek: number } {
   const startIsoDayOfWeek = (yearStartThursday.getUTCDay() + 6) % 7
   yearStartThursday.setUTCDate(yearStartThursday.getUTCDate() - startIsoDayOfWeek + 3)
 
-  const isoWeek =
-    1 + Math.round((utc.getTime() - yearStartThursday.getTime()) / (7 * MS_PER_DAY))
+  const isoWeek = 1 + Math.round((utc.getTime() - yearStartThursday.getTime()) / (7 * MS_PER_DAY))
 
   return { isoYear, isoWeek }
 }
@@ -88,4 +87,27 @@ export function addWeeks(weekKey: WeekKey, count: number): WeekKey {
 
 export function weekKeyOfDate(date: Date): WeekKey {
   return isoWeekKeyOf(todayLocal(date))
+}
+
+/** -1 if a is before b, 0 if equal, 1 if a is after b — weeks compare like their keys. */
+export function compareWeeks(a: WeekKey, b: WeekKey): -1 | 0 | 1 {
+  if (a < b) return -1
+  if (a > b) return 1
+  return 0
+}
+
+/**
+ * Steps a viewed week by one in either direction, clamped so browsing can
+ * never reach a week beyond the current one (blueprint/02: "future weeks
+ * unreachable"). Stepping backward is never clamped — the whole past is
+ * always reachable.
+ */
+export function stepWeek(
+  viewedWeek: WeekKey,
+  direction: 'prev' | 'next',
+  currentWeek: WeekKey = currentWeekKey(),
+): WeekKey {
+  if (direction === 'prev') return addWeeks(viewedWeek, -1)
+  if (compareWeeks(viewedWeek, currentWeek) >= 0) return currentWeek
+  return addWeeks(viewedWeek, 1)
 }

@@ -9,6 +9,7 @@ import {
   hasAtMostOneLiveQuestion,
   hasAtMostOneReadingBook,
   hasAtMostOneSeason,
+  isSessionCellEditable,
   isSessionInCurrentWeek,
   isSessionSlotFree,
   isSignalEditableToday,
@@ -164,5 +165,30 @@ describe('noRecordsBeforeFounding', () => {
       milestones: [{ id: 'ms1', text: 'Too early', capturedAt: '2026-07-04T10:00:00-05:00' }],
     })
     expect(noRecordsBeforeFounding(doc)).toBe(false)
+  })
+})
+
+describe('isSessionCellEditable', () => {
+  // 2026-07-08 is a Wednesday in ISO week 2026-W28 (Mon 07-06 .. Sun 07-12).
+  const today = '2026-07-08'
+
+  it('allows today itself', () => {
+    expect(isSessionCellEditable('2026-07-08', today)).toBe(true)
+  })
+
+  it('allows an earlier day in the current ISO week', () => {
+    expect(isSessionCellEditable('2026-07-06', today)).toBe(true)
+  })
+
+  it('refuses a future day within the current ISO week', () => {
+    expect(isSessionCellEditable('2026-07-10', today)).toBe(false)
+  })
+
+  it('refuses any day in a past week, even ones before today chronologically', () => {
+    expect(isSessionCellEditable('2026-06-29', today)).toBe(false)
+  })
+
+  it('refuses a future day in a future week', () => {
+    expect(isSessionCellEditable('2026-07-15', today)).toBe(false)
   })
 })

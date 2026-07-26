@@ -1,6 +1,14 @@
 import { describe, expect, it } from 'vitest'
 
-import { addWeeks, daysOfWeek, isoWeekKeyOf, mondayOf, weekBoundaries } from './iso-week'
+import {
+  addWeeks,
+  compareWeeks,
+  daysOfWeek,
+  isoWeekKeyOf,
+  mondayOf,
+  stepWeek,
+  weekBoundaries,
+} from './iso-week'
 
 // Hand-verified calendar facts used throughout this file:
 // 2026-01-01 is a Thursday (2024-01-01 Mon -> 2025-01-01 Wed -> 2026-01-01 Thu).
@@ -54,5 +62,31 @@ describe('addWeeks', () => {
 
   it('steps backward', () => {
     expect(addWeeks('2027-W01', -1)).toBe('2026-W53')
+  })
+})
+
+describe('compareWeeks', () => {
+  it('orders weeks like their keys', () => {
+    expect(compareWeeks('2026-W01', '2026-W02')).toBe(-1)
+    expect(compareWeeks('2026-W02', '2026-W01')).toBe(1)
+    expect(compareWeeks('2026-W27', '2026-W27')).toBe(0)
+  })
+})
+
+describe('stepWeek', () => {
+  it('always allows stepping backward, arbitrarily far, matching addWeeks(-1)', () => {
+    expect(stepWeek('2026-W01', 'prev', '2026-W27')).toBe(addWeeks('2026-W01', -1))
+  })
+
+  it('steps forward while below the current week', () => {
+    expect(stepWeek('2026-W25', 'next', '2026-W27')).toBe('2026-W26')
+  })
+
+  it('clamps forward stepping at the current week', () => {
+    expect(stepWeek('2026-W27', 'next', '2026-W27')).toBe('2026-W27')
+  })
+
+  it('never overshoots the current week even by one step', () => {
+    expect(stepWeek('2026-W26', 'next', '2026-W27')).toBe('2026-W27')
   })
 })

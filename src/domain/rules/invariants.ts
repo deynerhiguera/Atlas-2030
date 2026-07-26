@@ -35,8 +35,23 @@ export function isSessionSlotFree(
 }
 
 /** I-2 companion: a mark may only be deleted while its date is in the current ISO week. */
-export function isSessionInCurrentWeek(session: SessionMark, today: DayString = todayLocal()): boolean {
+export function isSessionInCurrentWeek(
+  session: SessionMark,
+  today: DayString = todayLocal(),
+): boolean {
   return isoWeekKeyOf(session.date) === isoWeekKeyOf(today)
+}
+
+/**
+ * Whether a week-grid cell may be marked or unmarked at all (blueprint/02
+ * FR-W3/FR-W4): today or an earlier day in the current ISO week — never a
+ * future day, and never a day belonging to a past week. The single source
+ * of truth for cell interactivity, consulted by both the UI (to decide
+ * which cells render as interactive) and the action layer (to refuse the
+ * mutation even if a caller somehow bypassed the UI).
+ */
+export function isSessionCellEditable(date: DayString, today: DayString = todayLocal()): boolean {
+  return compareDays(date, today) <= 0 && isoWeekKeyOf(date) === isoWeekKeyOf(today)
 }
 
 /** I-3: at most one question not yet answered. */

@@ -21,6 +21,7 @@ export function IconButton({ label, className, children, ...rest }: IconButtonPr
         'grid size-8 place-items-center rounded-control text-ink-muted',
         'transition-colors duration-instant ease-settle',
         'hover:bg-surface hover:text-ink',
+        'disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-ink-muted',
         className,
       )}
       {...rest}
