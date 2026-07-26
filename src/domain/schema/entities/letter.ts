@@ -7,9 +7,9 @@ import { isoTimestampSchema } from '../primitives'
  * any v≤2030 code path — the encoding prevents accidental self-spoiling in
  * exports, not determined adversaries; documented honestly, not "security".
  *
- * Optional at this stage of the build: the Founding ceremony that writes and
- * seals a real letter has not shipped yet (roadmap M6). A document may exist
- * — and be lived in — before a letter has been written.
+ * Optional because it does not exist until the Founding ceremony's seal
+ * step writes it (`sealLetter`, `data/actions/founding-actions`) — a
+ * document mid-ceremony is real before its letter is.
  */
 export const letterSchema = z.object({
   sealedBody: z.string().min(1).startsWith('ATLAS-SEALED-V1:'),

@@ -11,8 +11,7 @@ export interface SeasonWeekInfo {
  * "Foundations · week 4 of 12" (blueprint/02 FR-W1). `index` counts from 1 at
  * the season's own start week; `total` is the season's planned length in
  * weeks, rounded up. Not clamped to the season's span — a week outside it
- * still produces an honest (if unusual) index, since the Founding ceremony
- * that would prevent that state from arising has not shipped yet (M6).
+ * (viewed via past-week navigation) still produces an honest, if unusual, index.
  */
 export function seasonWeekIndex(season: Season, weekKey: WeekKey): SeasonWeekInfo {
   const viewedMonday = mondayOf(weekKey)

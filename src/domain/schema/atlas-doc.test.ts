@@ -18,6 +18,11 @@ describe('createFreshAtlasDoc', () => {
     expect(doc.settings).toEqual({ theme: 'system', reducedMotion: 'system' })
   })
 
+  it('starts unfounded, at the first step of the Founding ceremony', () => {
+    const doc = createFreshAtlasDoc(new Date(), '0.0.1')
+    expect(doc.meta.foundingStep).toBe('letter')
+  })
+
   it('round-trips through JSON without loss', () => {
     const doc = createFreshAtlasDoc(new Date(), '0.0.1')
     const roundTripped: unknown = JSON.parse(JSON.stringify(doc))

@@ -26,9 +26,9 @@ export const CURRENT_SCHEMA_VERSION = 1
  * The document (blueprint/03, /04): one root value, loaded fully into
  * memory, persisted whole. Collections are arrays — order is never semantic.
  *
- * `letter`, `identity`, `seasons`, `questions`, and `books` may be empty:
- * the Founding ceremony that would populate them (roadmap M6) has not
- * shipped yet. Nothing here is fabricated to fill the gap.
+ * `letter`, `identity`, `seasons`, `questions`, and `books` are empty until
+ * the Founding ceremony populates them. Nothing here is fabricated to fill
+ * the gap — a document may exist, mid-ceremony, before any of them do.
  */
 export const atlasDocSchema = z.object({
   schemaVersion: z.literal(CURRENT_SCHEMA_VERSION),
@@ -49,8 +49,10 @@ export type AtlasDoc = z.infer<typeof atlasDocSchema>
 
 /**
  * A fresh, honest document for a brand-new install: real timestamps, empty
- * collections, default settings. Not a "founded" Atlas in the product sense
- * (blueprint/02's Founding ceremony is roadmap M6) — just a valid one.
+ * collections, default settings — and `foundingStep: 'letter'`, marking it
+ * unfounded. This is the state the Founding ceremony (blueprint/02 C1) is
+ * entered from and writes into; it never fabricates a season, a system, or
+ * an identity statement to fill the gap.
  */
 export function createFreshAtlasDoc(now: Date, appVersion: string): AtlasDoc {
   return {
@@ -58,6 +60,7 @@ export function createFreshAtlasDoc(now: Date, appVersion: string): AtlasDoc {
     meta: {
       foundedAt: now.toISOString(),
       appVersionAtFounding: appVersion,
+      foundingStep: 'letter',
     },
     identity: [],
     seasons: [],
