@@ -10,6 +10,9 @@ export default defineConfig({
   },
   test: {
     environment: 'node',
+    // Domain/data tests are pure and stay on the fast node environment;
+    // component tests (.test.tsx) need a DOM, so they alone get jsdom.
+    environmentMatchGlobs: [['**/*.test.tsx', 'jsdom']],
     setupFiles: ['./vitest.setup.ts'],
   },
 })
