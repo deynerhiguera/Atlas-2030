@@ -15,6 +15,7 @@ import { useMotionMode } from '@/design/hooks/use-motion-mode'
 import { duration, easeSettle, reducedFade } from '@/design/tokens'
 
 import { BookSection } from './book-section'
+import { CaptureAction } from './capture-action'
 import { QuestionSection } from './question-section'
 import { SystemsSection } from './systems-section'
 import { TodayBand } from './today-band'
@@ -38,11 +39,12 @@ function formatWeekRange(weekKey: WeekKey): string {
  *
  * Deliberately reads only the small, stable slices it needs directly
  * (founding date, the season) rather than the whole document: Question,
- * Book, Systems, and the today band each own a narrow, independent
- * `useAtlasStore` selector and are memoized, so editing a book's progress
- * never re-renders the systems grid and marking a session never re-renders
- * the question card (blueprint/07's performance note). Every write still
- * goes through the imported data/actions functions directly (blueprint/03).
+ * Book, Systems, the today band, and the capture action each own a narrow,
+ * independent `useAtlasStore` selector and are memoized, so editing a
+ * book's progress never re-renders the systems grid and marking a session
+ * never re-renders the question card (blueprint/07's performance note).
+ * Every write still goes through the imported data/actions functions
+ * directly (blueprint/03).
  */
 export function WeekScreen() {
   const hydrated = useAtlasStore((state) => state.doc !== null)
@@ -111,6 +113,8 @@ export function WeekScreen() {
       {isCurrentWeek && <TodayBand />}
 
       <WeekFooter dayOfBecoming={dayOfBecoming(foundedAt, today)} />
+
+      <CaptureAction />
     </motion.div>
   )
 }
