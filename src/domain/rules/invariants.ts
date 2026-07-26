@@ -11,7 +11,7 @@ import { isoWeekKeyOf } from '../time/iso-week'
  * Two invariants from the blueprint do not yet apply and are intentionally
  * absent: I-6 (one weekly Reflection) needs the Reflection entity, which
  * arrives at schemaVersion 2; I-9 (identity has a version per pillar) needs
- * the Founding ceremony, which arrives at roadmap M5. Neither is deferred
+ * the Founding ceremony, which arrives at roadmap M6. Neither is deferred
  * work sitting unfinished — they simply have no subject yet.
  */
 

@@ -1,5 +1,6 @@
 import { useId, type KeyboardEvent } from 'react'
 
+import { Text } from '@/design/primitives/text'
 import { cn } from '@/lib/cn'
 
 const STOPS = [1, 2, 3, 4, 5] as const
@@ -54,9 +55,9 @@ export function EnergyDial({ value, onChange, disabled = false }: EnergyDialProp
 
   return (
     <div className="flex items-center gap-4">
-      <span id={labelId} className="text-label font-sans uppercase tracking-[0.08em] text-ink-muted">
+      <Text variant="label" as="span" muted id={labelId}>
         Energy
-      </span>
+      </Text>
       <div
         role="slider"
         tabIndex={disabled ? -1 : 0}

@@ -4,7 +4,7 @@ import { isoTimestampSchema } from '../primitives'
 
 /**
  * meta.foundingStep exists only mid-founding (blueprint/04); the Founding
- * ceremony itself is not yet built (roadmap M5), so it is always absent
+ * ceremony itself is not yet built (roadmap M6), so it is always absent
  * today. foundedAt currently marks when this Atlas document first came
  * into existence — the ceremony will re-anchor its meaning without a
  * migration, since the field itself does not change shape.

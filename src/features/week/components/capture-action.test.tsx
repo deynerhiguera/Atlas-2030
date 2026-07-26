@@ -17,6 +17,26 @@ describe('CaptureAction — the trigger', () => {
     render(<CaptureAction />)
     expect(screen.getByRole('button', { name: '+ Capture' })).toBeInTheDocument()
   })
+
+  it('survives being opened and closed rapidly, repeatedly, and still works on the last open', async () => {
+    setHydratedDoc(makeDoc())
+    const user = userEvent.setup()
+    render(<CaptureAction />)
+
+    const trigger = screen.getByRole('button', { name: '+ Capture' })
+    for (let i = 0; i < 5; i += 1) {
+      await user.click(trigger)
+      await user.keyboard('{Escape}')
+    }
+
+    await user.click(trigger)
+    await user.type(await screen.findByLabelText('Milestone'), 'Still works')
+    await user.click(screen.getByRole('button', { name: 'Capture' }))
+
+    expect(useAtlasStore.getState().doc?.milestones).toEqual([
+      expect.objectContaining({ text: 'Still works' }),
+    ])
+  })
 })
 
 describe('CaptureAction — milestone (no question or book yet)', () => {

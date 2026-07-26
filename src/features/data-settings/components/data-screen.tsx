@@ -2,6 +2,7 @@ import { Text } from '@/design/primitives/text'
 
 import { ExportPanel } from './export-panel'
 import { ImportPanel } from './import-panel'
+import { ReducedMotionPicker } from './reduced-motion-picker'
 import { StorageStatus } from './storage-status'
 import { ThemePicker } from './theme-picker'
 
@@ -14,6 +15,7 @@ export function DataScreen() {
       <ExportPanel />
       <ImportPanel />
       <ThemePicker />
+      <ReducedMotionPicker />
       <StorageStatus />
     </div>
   )

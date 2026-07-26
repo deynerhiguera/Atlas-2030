@@ -1,8 +1,9 @@
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { createFreshAtlasDoc } from '@/domain/schema'
 
 import { createAutosave } from './autosave'
+import * as dbModule from './db'
 import { readRawDoc, resetDbConnectionForTests } from './db'
 
 // Vitest's fake timers and fake-indexeddb's own internal task scheduling do
@@ -65,5 +66,36 @@ describe('createAutosave', () => {
 
     await autosave.flushNow()
     expect(await readRawDoc()).toEqual(doc)
+  })
+
+  it('recovers after a failed write instead of poisoning every write after it', async () => {
+    const writeSpy = vi.spyOn(dbModule, 'writeRawDoc').mockRejectedValueOnce(new Error('quota exceeded'))
+
+    const autosave = createAutosave(TEST_DEBOUNCE_MS)
+    const first = createFreshAtlasDoc(new Date('2026-07-01T00:00:00Z'), '0.0.1')
+    autosave.schedule(first)
+    await wait(TEST_DEBOUNCE_MS * 3)
+    expect(await readRawDoc()).toBeUndefined()
+
+    writeSpy.mockRestore()
+    const second = createFreshAtlasDoc(new Date('2026-07-02T00:00:00Z'), '0.0.1')
+    autosave.schedule(second)
+    await wait(TEST_DEBOUNCE_MS * 3)
+    expect(await readRawDoc()).toEqual(second)
+  })
+
+  it('reports null on success and a message on failure via onWriteSettled', async () => {
+    const writeSpy = vi.spyOn(dbModule, 'writeRawDoc').mockRejectedValueOnce(new Error('quota exceeded'))
+    const settled: Array<string | null> = []
+
+    const autosave = createAutosave(TEST_DEBOUNCE_MS, (error) => settled.push(error))
+    autosave.schedule(createFreshAtlasDoc(new Date('2026-07-01T00:00:00Z'), '0.0.1'))
+    await wait(TEST_DEBOUNCE_MS * 3)
+    expect(settled).toEqual(['quota exceeded'])
+
+    writeSpy.mockRestore()
+    autosave.schedule(createFreshAtlasDoc(new Date('2026-07-02T00:00:00Z'), '0.0.1'))
+    await wait(TEST_DEBOUNCE_MS * 3)
+    expect(settled).toEqual(['quota exceeded', null])
   })
 })

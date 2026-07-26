@@ -13,12 +13,14 @@ export interface AtlasStoreState {
   doc: AtlasDoc | null
   hydrated: boolean
   hydrationError: string | null
+  autosaveError: string | null
 }
 
 export const useAtlasStore = create<AtlasStoreState>(() => ({
   doc: null,
   hydrated: false,
   hydrationError: null,
+  autosaveError: null,
 }))
 
 export function setHydratedDoc(doc: AtlasDoc): void {
@@ -27,6 +29,11 @@ export function setHydratedDoc(doc: AtlasDoc): void {
 
 export function setHydrationError(message: string): void {
   useAtlasStore.setState({ doc: null, hydrated: false, hydrationError: message })
+}
+
+/** `null` clears a previously reported failure once a write succeeds again. */
+export function setAutosaveError(message: string | null): void {
+  useAtlasStore.setState({ autosaveError: message })
 }
 
 /** The one seam every data/actions mutation passes through. */

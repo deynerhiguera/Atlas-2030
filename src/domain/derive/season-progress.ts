@@ -12,7 +12,7 @@ export interface SeasonWeekInfo {
  * the season's own start week; `total` is the season's planned length in
  * weeks, rounded up. Not clamped to the season's span — a week outside it
  * still produces an honest (if unusual) index, since the Founding ceremony
- * that would prevent that state from arising has not shipped yet (M5).
+ * that would prevent that state from arising has not shipped yet (M6).
  */
 export function seasonWeekIndex(season: Season, weekKey: WeekKey): SeasonWeekInfo {
   const viewedMonday = mondayOf(weekKey)

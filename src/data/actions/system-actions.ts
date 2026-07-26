@@ -12,7 +12,7 @@ export interface AddSystemInput {
 
 /**
  * Declares a new recurring system (blueprint/07 F9 note: this is the
- * temporary path onto the roster until the Founding ceremony — roadmap M5 —
+ * temporary path onto the roster until the Founding ceremony — roadmap M6 —
  * writes systems as part of its own flow; this action itself does not go
  * away, only the seed form that calls it today).
  *
