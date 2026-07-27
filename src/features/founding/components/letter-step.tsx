@@ -6,12 +6,19 @@ import { TextArea } from '@/design/primitives/textarea'
 import { FOUNDING_LETTER_BODY, FOUNDING_LETTER_PLACEHOLDER, FOUNDING_LETTER_TITLE } from '@/design/copy'
 
 interface LetterStepProps {
+  initialText?: string
   onSeal: (text: string) => void
 }
 
-/** Step 2. The draft lives only in this component's state until sealed — nothing partial is ever persisted. */
-export function LetterStep({ onSeal }: LetterStepProps) {
-  const [text, setText] = useState('')
+/**
+ * Step 2. The draft lives only in this component's state until sealed —
+ * nothing partial is ever persisted. `initialText` restores whatever was
+ * typed if the seal warning (step 3) is cancelled with "Keep writing":
+ * that unmounts and remounts this component, so without it the draft
+ * would be silently lost even though it was captured a moment earlier.
+ */
+export function LetterStep({ initialText = '', onSeal }: LetterStepProps) {
+  const [text, setText] = useState(initialText)
 
   return (
     <div className="flex flex-col gap-6">
