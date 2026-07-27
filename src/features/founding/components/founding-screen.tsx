@@ -76,6 +76,7 @@ export function FoundingScreen() {
       return (
         <CeremonyShell stepKey="letter-writing">
           <LetterStep
+            initialText={pendingLetterText}
             onSeal={(text) => {
               setPendingLetterText(text)
               setLetterPhase('confirm')

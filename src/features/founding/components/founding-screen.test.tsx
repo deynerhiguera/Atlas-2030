@@ -100,6 +100,24 @@ describe('FoundingScreen — the complete ceremony', () => {
   })
 })
 
+describe('FoundingScreen — the letter draft survives "Keep writing"', () => {
+  it('restores exactly what was typed instead of remounting an empty draft', async () => {
+    const user = userEvent.setup()
+    renderFounding()
+
+    await user.click(screen.getByRole('button', { name: 'Begin' }))
+    const letterField = await screen.findByLabelText('Your letter to 2030')
+    await user.type(letterField, 'Dear future me, do not forget this part.')
+    await user.click(screen.getByRole('button', { name: 'Seal it' }))
+
+    await user.click(await screen.findByRole('button', { name: 'Keep writing' }))
+
+    expect(await screen.findByLabelText('Your letter to 2030')).toHaveValue(
+      'Dear future me, do not forget this part.',
+    )
+  })
+})
+
 describe('FoundingScreen — interruption and resume', () => {
   it('resumes at the systems step once identity is already complete', () => {
     const fresh = createFreshAtlasDoc(NOW, '0.0.1')
