@@ -2,6 +2,7 @@ import { createRootRoute, createRoute, createRouter, redirect } from '@tanstack/
 
 import { useAtlasStore } from '@/data/store'
 import { DataScreen } from '@/features/data-settings'
+import { FoundationsScreen } from '@/features/foundations'
 import { FoundingScreen } from '@/features/founding'
 import { WeekScreen } from '@/features/week'
 
@@ -38,6 +39,13 @@ const dataRoute = createRoute({
   component: DataScreen,
 })
 
+const foundationsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/foundations',
+  beforeLoad: redirectIfUnfounded,
+  component: FoundationsScreen,
+})
+
 const foundingRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/founding',
@@ -50,7 +58,7 @@ const foundingRoute = createRoute({
   component: FoundingScreen,
 })
 
-const routeTree = rootRoute.addChildren([weekRoute, dataRoute, foundingRoute])
+const routeTree = rootRoute.addChildren([weekRoute, dataRoute, foundationsRoute, foundingRoute])
 
 export const router = createRouter({
   routeTree,

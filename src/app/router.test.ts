@@ -43,6 +43,12 @@ describe('founding gate', () => {
     expect(router.state.location.pathname).toBe('/founding')
   })
 
+  it('redirects an unfounded document away from /foundations to /founding', async () => {
+    setHydratedDoc(unfoundedDoc())
+    await router.navigate({ to: '/foundations' })
+    expect(router.state.location.pathname).toBe('/founding')
+  })
+
   it('redirects a founded document away from /founding to /', async () => {
     setHydratedDoc(foundedDoc())
     await router.navigate({ to: '/founding' })
@@ -53,5 +59,11 @@ describe('founding gate', () => {
     setHydratedDoc(foundedDoc())
     await router.navigate({ to: '/data' })
     expect(router.state.location.pathname).toBe('/data')
+  })
+
+  it('lets a founded document reach /foundations normally', async () => {
+    setHydratedDoc(foundedDoc())
+    await router.navigate({ to: '/foundations' })
+    expect(router.state.location.pathname).toBe('/foundations')
   })
 })
