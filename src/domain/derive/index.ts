@@ -1,4 +1,5 @@
 export { dayOfBecoming } from './day-count'
+export { daysSinceLastActivity } from './days-since-activity'
 export { densityFor } from './density'
 export type { DensityResult } from './density'
 export { weekCellsFor } from './week-view'
