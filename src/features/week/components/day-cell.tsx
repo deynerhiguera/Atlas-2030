@@ -56,7 +56,7 @@ export function DayCell({
       }}
       onKeyDown={handleKeyDown}
       className={cn(
-        'grid h-9 w-9 place-items-center rounded-control outline-none',
+        'grid h-9 w-9 place-items-center rounded-control',
         interactive ? 'cursor-pointer' : 'cursor-default',
       )}
     >
