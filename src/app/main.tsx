@@ -11,6 +11,7 @@ import { GateScreen } from '@/design/primitives/gate-screen'
 
 import { MotionModeProvider } from './providers/motion-mode-provider'
 import { ThemeProvider } from './providers/theme-provider'
+import { registerServiceWorker } from './register-service-worker'
 import { router } from './router'
 
 /**
@@ -47,3 +48,4 @@ async function bootstrap() {
 }
 
 void bootstrap()
+registerServiceWorker(__APP_VERSION__)
