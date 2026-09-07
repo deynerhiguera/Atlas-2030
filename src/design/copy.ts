@@ -88,3 +88,9 @@ export const FOUNDING_PULSE_BODY =
   "Today's check-in — the same sixty seconds you'll do most days from here on."
 
 export const FOUNDING_ASSEMBLY_LINE = 'Your Atlas is beginning.'
+
+/**
+ * Welcome-back state (blueprint/02 Week states, design/02 "the vanishing"):
+ * no count of days missed, no guilt — just an acknowledgment, once, on return.
+ */
+export const WELCOME_BACK_LINE = 'Welcome back.'

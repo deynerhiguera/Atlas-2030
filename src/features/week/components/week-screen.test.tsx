@@ -84,6 +84,36 @@ describe('WeekScreen — past-week navigation', () => {
   })
 })
 
+describe('WeekScreen — welcome back', () => {
+  it('does not show the welcome-back line for a document with recent activity', () => {
+    setHydratedDoc(makeDoc({ signals: [{ date: '2026-07-08', energy: 3 }] }))
+    render(<WeekScreen />)
+    expect(screen.queryByText('Welcome back.')).not.toBeInTheDocument()
+  })
+
+  it('shows the welcome-back line after a 14+ day gap since the last signal or session', () => {
+    setHydratedDoc(makeDoc({ signals: [{ date: '2026-06-01', energy: 3 }] }))
+    render(<WeekScreen />)
+    expect(screen.getByText('Welcome back.')).toBeInTheDocument()
+  })
+
+  it('does not show the welcome-back line on day one, with no prior activity at all', () => {
+    setHydratedDoc(makeDoc({}, new Date('2026-07-08T09:00:00-05:00')))
+    render(<WeekScreen />)
+    expect(screen.queryByText('Welcome back.')).not.toBeInTheDocument()
+  })
+
+  it('hides the welcome-back line while browsing a past week', async () => {
+    const user = userEvent.setup({ delay: null })
+    setHydratedDoc(makeDoc({ signals: [{ date: '2026-06-01', energy: 3 }] }))
+    render(<WeekScreen />)
+
+    expect(screen.getByText('Welcome back.')).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Previous week' }))
+    expect(screen.queryByText('Welcome back.')).not.toBeInTheDocument()
+  })
+})
+
 describe('WeekScreen — today band wiring', () => {
   beforeEach(() => {
     setHydratedDoc(makeDoc({ systems: [makeSystem({ id: 'sys-1' })] }))

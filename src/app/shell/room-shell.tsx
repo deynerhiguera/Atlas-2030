@@ -51,6 +51,27 @@ export function RoomShell({ children }: { children: ReactNode }) {
         </div>
         <div className="flex items-center gap-1">
           <Link
+            to="/foundations"
+            aria-label="Foundations"
+            title="Foundations"
+            className="grid size-8 place-items-center rounded-control text-ink-muted transition-colors duration-instant ease-settle hover:bg-surface hover:text-ink"
+          >
+            <svg
+              width={16}
+              height={16}
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.5}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M2 13.5V3.8c0-.4.3-.7.7-.8l4.8-1.3a1 1 0 0 1 .5 0l4.8 1.3c.4.1.7.4.7.8v9.7" />
+              <path d="M8 2.7v10.8M2 13.5h12" />
+            </svg>
+          </Link>
+          <Link
             to="/data"
             aria-label="Data & Settings"
             title="Data & Settings"

@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
-import { dayOfBecoming } from '@/domain/derive'
+import { dayOfBecoming, daysSinceLastActivity } from '@/domain/derive'
 import { currentWeekKey, parseLocalDay, stepWeek, weekBoundaries, type WeekKey } from '@/domain/time'
 import { useAtlasStore } from '@/data/store'
 import { useToday } from '@/design/hooks/use-today'
@@ -12,6 +12,7 @@ import { SystemsSection } from './systems-section'
 import { TodayBand } from './today-band'
 import { WeekFooter } from './week-footer'
 import { WeekHeader } from './week-header'
+import { WelcomeBack } from './welcome-back'
 
 const fullDateFormatter = new Intl.DateTimeFormat('en-US', {
   weekday: 'long',
@@ -45,8 +46,18 @@ export function WeekScreen() {
   const hydrated = useAtlasStore((state) => state.doc !== null)
   const season = useAtlasStore((state) => state.doc?.seasons[0])
   const foundedAt = useAtlasStore((state) => state.doc?.meta.foundedAt)
+  const signals = useAtlasStore((state) => state.doc?.signals)
+  const sessions = useAtlasStore((state) => state.doc?.sessions)
   const [viewedWeekKey, setViewedWeekKey] = useState<WeekKey>(() => currentWeekKey())
   const today = useToday()
+
+  const daysSinceActivity = useMemo(() => {
+    const activityDates = [
+      ...(signals ?? []).map((signal) => signal.date),
+      ...(sessions ?? []).map((session) => session.date),
+    ]
+    return daysSinceLastActivity(activityDates, today)
+  }, [signals, sessions, today])
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
@@ -78,6 +89,7 @@ export function WeekScreen() {
   return (
     <div className="mx-auto flex max-w-prose-atlas flex-col gap-10 px-6 py-12 md:px-0">
       <h1 className="sr-only">This week</h1>
+      {isCurrentWeek && <WelcomeBack daysSinceActivity={daysSinceActivity} />}
       <WeekHeader
         {...(season !== undefined ? { season } : {})}
         weekKey={viewedWeekKey}
