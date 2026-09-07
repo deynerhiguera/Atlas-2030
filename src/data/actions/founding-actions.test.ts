@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { createFreshAtlasDoc, PILLAR_IDS, type AtlasDoc, type PillarId } from '@/domain/schema'
 
+import * as storageStatus from '../persist/storage-status'
 import { setHydratedDoc, useAtlasStore } from '../store/atlas-store'
 import { setTodayEnergy } from './signal-actions'
 
@@ -157,6 +158,19 @@ describe('completeFounding', () => {
     completeFounding()
     expect(doc().meta.foundingStep).toBeUndefined()
     expect(doc().meta.foundedAt).toBe(foundedAtBefore)
+  })
+
+  it('requests persistent storage once founding actually completes (FR-D6)', () => {
+    const spy = vi.spyOn(storageStatus, 'requestPersistentStorage').mockResolvedValue(true)
+    setTodayEnergy(4)
+    completeFounding()
+    expect(spy).toHaveBeenCalledTimes(1)
+  })
+
+  it('does not request persistent storage when completion is refused', () => {
+    const spy = vi.spyOn(storageStatus, 'requestPersistentStorage').mockResolvedValue(true)
+    completeFounding()
+    expect(spy).not.toHaveBeenCalled()
   })
 })
 

@@ -1,19 +1,23 @@
 import { createAutosave, type Autosave } from './persist/autosave'
 import { hydrateAtlasDoc } from './persist/hydrate'
-import { requestPersistentStorage } from './persist/storage-status'
 import { setAutosaveError, setHydratedDoc, setHydrationError, useAtlasStore } from './store/atlas-store'
 
 let autosaveInstance: Autosave | null = null
 
 /**
- * Runs once, awaited before the app renders (blueprint/03): hydrate, wire
- * autosave to every subsequent document change, and — on a brand-new
- * install — request persistent storage. No loading UI exists above this;
- * the await is the entire "loading state" this architecture needs.
+ * Runs once, awaited before the app renders (blueprint/03): hydrate and wire
+ * autosave to every subsequent document change. No loading UI exists above
+ * this; the await is the entire "loading state" this architecture needs.
+ *
+ * FR-D6's persistent-storage request is *not* triggered here — a fresh
+ * install has no data worth protecting yet, and prompting before founding
+ * risks the browser permission being spent (denied or ignored) before the
+ * user has invested anything. It fires once founding actually completes
+ * (`completeFounding`, data/actions/founding-actions).
  */
 export async function initializeAtlasData(appVersion: string): Promise<void> {
   try {
-    const { doc, isFreshInstall } = await hydrateAtlasDoc(appVersion)
+    const { doc } = await hydrateAtlasDoc(appVersion)
     setHydratedDoc(doc)
 
     const autosave = createAutosave(undefined, setAutosaveError)
@@ -24,10 +28,6 @@ export async function initializeAtlasData(appVersion: string): Promise<void> {
         autosave.schedule(state.doc)
       }
     })
-
-    if (isFreshInstall) {
-      void requestPersistentStorage()
-    }
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Atlas could not load its data.'
     setHydrationError(message)

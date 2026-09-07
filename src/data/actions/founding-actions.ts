@@ -15,6 +15,7 @@ import {
 } from '@/domain/schema'
 import { addDays, todayLocal } from '@/domain/time'
 
+import { requestPersistentStorage } from '../persist/storage-status'
 import { getCurrentDoc, replaceDoc } from '../store/atlas-store'
 import type { AskQuestionInput } from './question-actions'
 import { askQuestion } from './question-actions'
@@ -172,6 +173,10 @@ export function foundBook(input: StartBookInput): void {
  * `setTodayEnergy`) before founding can complete — the ceremony ends inside
  * day one's texture, not before it. Deletes `foundingStep` entirely, which
  * is what "founded" means (blueprint/04 Meta).
+ *
+ * FR-D6: this is the one moment `requestPersistentStorage` is called — once
+ * founding is real, not before, so the browser's permission isn't spent on
+ * a document that might never be finished.
  */
 export function completeFounding(): void {
   const doc = getCurrentDoc()
@@ -182,4 +187,5 @@ export function completeFounding(): void {
   if (!hasEnergy) return
 
   setFoundingStep(undefined)
+  void requestPersistentStorage()
 }
